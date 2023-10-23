@@ -56,75 +56,83 @@ def logout_user():
     return jsonable_encoder({})
 
 
-@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-def create_user(user_data: UserCreate, db: Session = Depends(get_db)):
-    try:
-        db_user = user_ops.create_user(
-            db,
-            full_name=user_data.full_name,
-            username=user_data.username,
-            email=user_data.email,
-            role=user_data.role
-        )
-        return jsonable_encoder(db_user)
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+@router.get("/protected")
+def protected_route(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    print(current_user)
+    return jsonable_encoder(current_user)
+
+
+
+
+# @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+# def create_user(user_data: UserCreate, db: Session = Depends(get_db)):
+#     try:
+#         db_user = user_ops.create_user(
+#             db,
+#             full_name=user_data.full_name,
+#             username=user_data.username,
+#             email=user_data.email,
+#             role=user_data.role
+#         )
+#         return jsonable_encoder(db_user)
+#     except Exception as e:
+#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
     
 
-@router.get("/", response_model=List[UserResponse])
-def get_users(offset: int = Query(0, ge=0), limit: int = Query(10, ge=1), 
-            current_user: User = Depends(get_current_user_dependency), db: Session = Depends(get_db)):
-    try:
-        users = user_ops.get_users_with_pagination(db, offset=offset, limit=limit)
-        return users
+# @router.get("/", response_model=List[UserResponse])
+# def get_users(offset: int = Query(0, ge=0), limit: int = Query(10, ge=1), 
+#             current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+#     try:
+#         users = user_ops.get_users_with_pagination(db, offset=offset, limit=limit)
+#         return users
     
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal Server Error: {str(e)}")
+#     except Exception as e:
+#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal Server Error: {str(e)}")
     
 
-@router.get("/{user_id}", response_model=UserResponse)
-def read_user(user_id: int, current_user: User = Depends(get_current_user_dependency), db: Session = Depends(get_db)):
-    try:
-        if user_id != current_user.id:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not have access to this resource")
+# @router.get("/{user_id}", response_model=UserResponse)
+# def read_user(user_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+#     try:
+#         if user_id != current_user.id:
+#             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not have access to this resource")
 
-        db_user = user_ops.get_user_by_id(db, user_id)
+#         db_user = user_ops.get_user_by_id(db, user_id)
         
-        if db_user is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+#         if db_user is None:
+#             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-        return jsonable_encoder(db_user)
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal Server Error: {str(e)}")
+#         return jsonable_encoder(db_user)
+#     except Exception as e:
+#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal Server Error: {str(e)}")
 
 
-@router.put("/{user_id}", response_model=UserResponse)
-def update_user(user_id: int, user_data: UserBase, db: Session = Depends(get_db)):
-    try:
-        db_user = user_ops.get_user_by_id(db, user_id)
-        if db_user is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+# @router.put("/{user_id}", response_model=UserResponse)
+# def update_user(user_id: int, user_data: UserBase, db: Session = Depends(get_db)):
+#     try:
+#         db_user = user_ops.get_user_by_id(db, user_id)
+#         if db_user is None:
+#             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
         
-        db_user = user_ops.update_user(
-            db,
-            user=db_user,
-            full_name=user_data.full_name,
-            email=user_data.email,
-            role=user_data.role
-        )
-        return jsonable_encoder(db_user)
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+#         db_user = user_ops.update_user(
+#             db,
+#             user=db_user,
+#             full_name=user_data.full_name,
+#             email=user_data.email,
+#             role=user_data.role
+#         )
+#         return jsonable_encoder(db_user)
+#     except Exception as e:
+#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
-@router.delete("/{user_id}", response_model=dict)
-def delete_user(user_id: int, db: Session = Depends(get_db)):
-    try:
-        db_user = user_ops.get_user_by_id(db, user_id)
-        if db_user is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+# @router.delete("/{user_id}", response_model=dict)
+# def delete_user(user_id: int, db: Session = Depends(get_db)):
+#     try:
+#         db_user = user_ops.get_user_by_id(db, user_id)
+#         if db_user is None:
+#             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
         
-        user_ops.delete_user(db, db_user)
-        return {"message": "User deleted successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+#         user_ops.delete_user(db, db_user)
+#         return {"message": "User deleted successfully"}
+#     except Exception as e:
+#         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

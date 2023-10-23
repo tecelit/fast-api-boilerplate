@@ -3,11 +3,14 @@ from fastapi import Depends, HTTPException, status
 from core.config import settings
 from database.models import User
 import bcrypt
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer
 from passlib.context import CryptContext
+from database.ops import users as user_ops
 
 ALGORITHM = settings.ALGORITHM
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+bearer_scheme = HTTPBearer()
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password: str) -> str:
@@ -18,7 +21,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def create_jwt_token(user: User) -> str:
     token_data = {
-        "sub": user.id,
+        "sub": str(user.id), 
         "role": user.role
     }
     return jwt.encode(token_data, settings.SECRET_KEY, algorithm=ALGORITHM)
@@ -27,12 +30,7 @@ def decode_jwt_token(token: str) -> dict:
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except JWTError:
+    except JWTError as e:
+        print(f"Error decoding token: {e}")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
-def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
-    payload = decode_jwt_token(token)
-    user_id = payload.get("sub")
-    if user_id is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
-    return user_id

@@ -20,6 +20,9 @@ def get_user_by_email(db: Session, email: str):
     return db.query(User).filter(User.email == email).first()
 
 def get_user_by_id(db: Session, user_id: int):
+    user = db.query(User).filter(User.id == user_id).first()
+    import pdb
+    pdb.set_trace()
     return db.query(User).filter(User.id == user_id).first()
 
 def update_user(db: Session, user: User, full_name: str, email: str, role: str):
