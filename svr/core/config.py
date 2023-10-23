@@ -1,8 +1,8 @@
+from pydantic import BaseSettings
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
-
 
 dbUser = os.getenv('DB_USER')
 dbPass = os.getenv('DB_PASS')
@@ -16,3 +16,11 @@ db_string = "postgresql://{0}:{1}@{2}/{3}".format(dbUser, dbPass, db_server, dbN
 config_vars = {
     "DB_STRING" : db_string
 }
+
+
+class Settings(BaseSettings):
+    SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+    # Other settings...
+
+settings = Settings()
