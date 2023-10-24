@@ -45,3 +45,30 @@ def get_current_user(token_data: dict = Depends(get_current_user_from_token), db
         return db_user
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+
+
+def check_superadmin(current_user: User = Depends(get_current_user)):
+    """
+    Dependency to check if the current user has the role "superadmin".
+    """
+    if current_user['role'] != "superadmin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Permission denied. Only superadmins can perform this action.")
+    return current_user
+
+
+def check_admin(current_user: User = Depends(get_current_user)):
+    """
+    Dependency to check if the current user has the role "admin".
+    """
+    if current_user['role'] not in ["superadmin", "admin"]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Permission denied. Only admins can perform this action.")
+    return current_user
+
+
+def check_staff(current_user: User = Depends(get_current_user)):
+    """
+    Dependency to check if the current user has the role "staff".
+    """
+    if current_user['role'] not in ["superadmin", "admin", "staff"]:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Permission denied. Only staff can perform this action.")
+    return current_user

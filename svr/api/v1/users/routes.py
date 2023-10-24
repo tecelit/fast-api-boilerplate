@@ -61,6 +61,21 @@ def protected_route(current_user: User = Depends(get_current_user), db: Session 
     return jsonable_encoder(current_user)
 
 
+@router.get("/protected_superadmin_only")
+def protected_route(current_user: User = Depends(check_superadmin), db: Session = Depends(get_db)):
+    return jsonable_encoder(current_user)
+
+
+@router.get("/protected_admin_only")
+def protected_route(current_user: User = Depends(check_admin), db: Session = Depends(get_db)):
+    return jsonable_encoder(current_user)
+
+
+@router.get("/protected_staff_only")
+def protected_route(current_user: User = Depends(check_staff), db: Session = Depends(get_db)):
+    return jsonable_encoder(current_user)
+
+
 
 
 # @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
