@@ -8,7 +8,7 @@ class User(Base):
     full_name = Column(String, index=True, nullable=False)
     username = Column(String, unique=True, index=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
-    role = Column(String, nullable=False)
+    role = Column(String, nullable=False) # by convention - superdamin, admin, staff, others
     password_hash = Column(String, nullable=False)
 
     def __repr__(self):
