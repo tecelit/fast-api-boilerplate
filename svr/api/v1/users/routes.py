@@ -32,11 +32,14 @@ def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login/", response_model=UserLoginResponse, status_code=status.HTTP_200_OK)
 def login_user(user_data: UserLogin, db: Session = Depends(get_db)):
-    try:
-        db_user = user_ops.get_user_by_email(db, user_data.email)
-        if db_user is None or not verify_password(user_data.password, db_user.password_hash):
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+    db_user = user_ops.get_user_by_email(db, user_data.email)
+    if not db_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    
+    if not verify_password(user_data.password, db_user.password_hash):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
+    try:
         access_token = create_jwt_token(db_user)
         user_login_response = UserLoginResponse(
             access_token=access_token,

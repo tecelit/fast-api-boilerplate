@@ -3,7 +3,7 @@ from database.models import User
 from typing import List, Optional
 from sqlalchemy.exc import SQLAlchemyError
 
-def create_user(db: Session, full_name: str, username: str, email: str, role: str, password_hash: str):
+def create_user(db: Session, full_name: str, username: str, email: str, role: str, password_hash: str) -> Optional[User]:
     try:
         db_user = User(full_name=full_name, username=username, email=email, role=role, password_hash=password_hash)
         db.add(db_user)
@@ -12,33 +12,35 @@ def create_user(db: Session, full_name: str, username: str, email: str, role: st
         return db_user
     except SQLAlchemyError as e:
         db.rollback()
-        raise e
+        return None
 
-def get_users_with_pagination(db: Session, offset: int = 0, limit: int = 10) -> List[User]:
+def get_users_with_pagination(db: Session, offset: int = 0, limit: int = 10) -> Optional[List[User]]:
     try:
         users = db.query(User).offset(offset).limit(limit).all()
         return users
     except SQLAlchemyError as e:
-        raise e
+        return None
 
-def get_user_by_username(db: Session, username: str):
+def get_user_by_username(db: Session, username: str) -> Optional[User]:
     try:
-        return db.query(User).filter(User.username == username).first()
+        user = db.query(User).filter(User.username == username).first()
+        return user
     except SQLAlchemyError as e:
-        raise e
+        return None
 
-def get_user_by_email(db: Session, email: str):
+def get_user_by_email(db: Session, email: str) -> Optional[User]:
     try:
-        return db.query(User).filter(User.email == email).first()
+        user = db.query(User).filter(User.email == email).first()
+        return user
     except SQLAlchemyError as e:
-        raise e
+        return None
 
-def get_user_by_id(db: Session, user_id: int):
+def get_user_by_id(db: Session, user_id: int) -> Optional[User]:
     try:
         user = db.query(User).filter(User.id == user_id).first()
         return user
     except SQLAlchemyError as e:
-        raise e
+        return None
     
 def get_user_object(db: Session, user_id: int) -> Optional[dict]:
     try:
@@ -55,9 +57,9 @@ def get_user_object(db: Session, user_id: int) -> Optional[dict]:
         else:
             return None
     except Exception as e:
-        raise e
+        return None
 
-def update_user(db: Session, user: User, full_name: str, email: str, role: str):
+def update_user(db: Session, user: User, full_name: str, email: str, role: str) -> Optional[User]:
     try:
         user.full_name = full_name
         user.email = email
@@ -67,12 +69,13 @@ def update_user(db: Session, user: User, full_name: str, email: str, role: str):
         return user
     except SQLAlchemyError as e:
         db.rollback()
-        raise e
+        return None
 
-def delete_user(db: Session, user: User):
+def delete_user(db: Session, user: User) -> bool:
     try:
         db.delete(user)
         db.commit()
+        return True
     except SQLAlchemyError as e:
         db.rollback()
-        raise e
+        return False
