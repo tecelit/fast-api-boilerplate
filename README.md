@@ -1,4 +1,4 @@
-# FastAPI, SqlAlchemy, Postgres setup Boilerplate
+# Simple to use FastAPI, SqlAlchemy, Postgres setup Boilerplate
 
 FastAPI Boilerplate is a robust and highly customizable REST API template built with FastAPI, a modern, fast, web framework for building APIs with Python 3.6+ based on standard Python type hints. This boilerplate includes easy-to-use definitions and functionalities for handling roles, database migrations with Alembic, and more. It is designed to kickstart your FastAPI projects and simplify the development process.
 
