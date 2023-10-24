@@ -6,6 +6,8 @@ from jose import JWTError, jwt
 from core.config import settings
 from api.v1.users.auth import decode_jwt_token
 from database.ops import users as user_ops
+from database.models import User
+from sqlalchemy.orm import Session
 
 bearer_scheme = HTTPBearer()
 
@@ -30,12 +32,16 @@ def get_current_user_from_token(token: str = Depends(bearer_scheme)) -> dict:
     except JWTError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
-def get_current_user(token_data: dict = Depends(get_current_user_from_token)) -> dict:
+def get_current_user(token_data: dict = Depends(get_current_user_from_token), db: Session = Depends(get_db)) -> User:
     try:
         user_id = token_data.get("sub")
         if user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
         
-        return user_id
+        db_user = user_ops.get_user_object(db, user_id)
+        if db_user is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+        
+        return db_user
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
