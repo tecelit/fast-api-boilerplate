@@ -58,7 +58,6 @@ def logout_user():
 
 @router.get("/protected")
 def protected_route(current_user: User = Depends(get_current_user), db: Session = Depends(get_db), response_model=UserLoginResponse):
-    print(current_user)
     return jsonable_encoder(current_user)
 
 

@@ -1,10 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from core.config import config_vars
+from core.config import settings
 
 # Database configuration
-DATABASE_URL = config_vars.get('DB_STRING')
+DATABASE_URL = settings.db_string
 
 # Create the database engine
 engine = create_engine(
