@@ -5,10 +5,10 @@ FastAPI Boilerplate is a robust and highly customizable REST API template built 
 ## Features
 
 - **FastAPI**: Utilizes the power of FastAPI for high-performance API development.
-- **Swagger**: Swagger api documentation available
+- **Swagger**: Swagger API documentation available.
 - **Database Migrations**: Integrated with Alembic for seamless database schema migrations.
 - **Customizable**: Easily customizable and extendable to fit your specific project requirements.
-- **Security**: Basic implementation secure password hashing and JWT (JSON Web Tokens) for user authentication.
+- **Security**: Basic implementation of secure password hashing and JWT (JSON Web Tokens) for user authentication.
 - **Role-Based Access Control**: Provides predefined user roles (superadmin, admin, staff, and others) with easy-to-use functionalities for role-based access control.
 - **Exception Handling**: Comprehensive error handling and detailed exception messages for easier debugging.
 - **Requirements**: Includes a `requirements.txt` file for easy dependency installation with pip.
@@ -28,7 +28,12 @@ FastAPI Boilerplate is a robust and highly customizable REST API template built 
    pip install -r requirements.txt
    ```
 
-3. **Database Setup**:
+3. **Set Up Environment Variables**:
+
+   - Create a `.env` file in the project root based on the provided `.env.example`.
+   - Fill in the required environment variables in the `.env` file, including your database connection string and other configuration settings.
+
+4. **Database Setup**:
 
    - Set up your database connection string in `config.py`.
    - Run database migrations using Alembic:
@@ -37,7 +42,7 @@ FastAPI Boilerplate is a robust and highly customizable REST API template built 
      alembic upgrade head
      ```
 
-4. **Run the FastAPI Server**:
+5. **Run the FastAPI Server**:
 
    ```bash
    uvicorn main:app --reload
@@ -54,12 +59,9 @@ The API documentation (Swagger UI) is available at `http://localhost:8000/docs`.
 - **Roles**: Modify the predefined roles or add new roles in `svr/core/dependencies.py`.
 - **Endpoints**: Add new API endpoints in `svr/api/v1/<app-name>/routes.py` or modify existing ones in `svr/api/v1/users/routes.py`.
 - **Exception Handling**: Customize exception messages and responses in the `exceptions.py` file.
-- **Database Models**: Define your database models in the `svr/database/models.py` file and create corresponding CRUD operations in the `ops/<your-model>.py` file or try modifying the exisiting ones in `svr/database/ops/users.py`.
+- **Database Models**: Define your database models in the `svr/database/models.py` file and create corresponding CRUD operations in the `ops/<your-model>.py` file or try modifying the existing ones in `svr/database/ops/users.py`.
 - **Authentication**: Adjust the authentication logic in the `svr/api/v1/users/auth.py` file, including token expiration and issuer information.
 
-## Contribution
-
-Contributions are welcome! Feel free to open issues or submit pull requests to help improve this FastAPI boilerplate.
 
 ## License
 
