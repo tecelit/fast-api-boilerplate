@@ -18,8 +18,8 @@ FastAPI Boilerplate is a robust and highly customizable REST API template built 
 1. **Clone the Repository**:
 
    ```bash
-   git clone <repository-url>
-   cd fastapi-boilerplate
+   git clone git@github.com:tecelit/fast-api-boilerplate.git
+   cd fast-api-boilerplate
    ```
 
 2. **Install Dependencies**:
