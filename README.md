@@ -16,7 +16,7 @@ FastAPI Boilerplate is a robust and highly customizable REST API template built 
 
 
 
-## Setup (Dcoker environment)
+## Setup (Docker environment)
 
 1. **Clone the Repository**:
 
