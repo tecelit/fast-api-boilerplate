@@ -1,0 +1,54 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    container_name: excelus_app_svr
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    command: >
+        bash -c "python init_db.py && alembic upgrade head;
+                uvicorn main:app --host=0.0.0.0 --port 8000"
+    volumes:
+      - .:/app
+    networks:
+      - excelus_network
+
+  db:
+    container_name: excelus_postgres
+    image: postgres:latest
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    
+    networks:
+      - excelus_network
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+
+  adminer:
+    container_name: excelusdb_viewer
+    image: adminer:latest
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DESIGN: nette
+    ports:
+      - "5557:8080"
+    networks:
+      - excelus_network
+
+networks:
+  excelus_network:
+    driver: bridge
+
+volumes:
+  pg_data:
