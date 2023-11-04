@@ -3,7 +3,7 @@ version: "3"
 services:
   app:
     build: .
-    container_name: excelus_app_svr
+    container_name: api_svr
     extra_hosts:
       - "host.docker.internal:host-gateway"
     env_file:
@@ -21,7 +21,7 @@ services:
       - excelus_network
 
   db:
-    container_name: excelus_postgres
+    container_name: postgres_service
     image: postgres:latest
     ports:
       - "5433:5432"
@@ -36,7 +36,7 @@ services:
       - pg_data:/var/lib/postgresql/data/
 
   adminer:
-    container_name: excelusdb_viewer
+    container_name: db_viewer_service
     image: adminer:latest
     environment:
       ADMINER_DEFAULT_SERVER: db

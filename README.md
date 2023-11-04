@@ -46,8 +46,8 @@ This command builds and starts the services defined in the docker-compose.yml fi
 1. **Clone the Repository**:
 
    ```bash
-   git clone git@github.com:RtjShreyD/excelus_app.git
-   cd excelus_app/svr/
+   git clone git@github.com:tecelit/fast-api-boilerplate.git
+   cd fast-api-boilerplate/svr/
    ```
 
 2. **Create a Virtual Environment (Windows)**:
